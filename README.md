@@ -1,8 +1,6 @@
 # image_processing_microservice
 
 
-
-
 image_processing_microservice/
 │
 ├── app/
