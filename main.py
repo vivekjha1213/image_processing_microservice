@@ -1,28 +1,40 @@
 from fastapi import FastAPI
-from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from fastapi.middleware.cors import CORSMiddleware
+from app.api.endpoints import image
+from app.core.database import Base, engine, SessionLocal
 from dotenv import load_dotenv
 import os
 
-# Load environment variables from .env file
 load_dotenv()
 
 app = FastAPI()
 
-# Read database URL from environment variables
-DATABASE_URL = os.getenv("DATABASE_URL")
+# CORS middleware allows requests from different origins in your frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Create the SQLAlchemy engine
-engine = create_engine(DATABASE_URL)
+# @app.on_event("startup")
+# def startup_event():
+    # Create all tables if they don't already exist
+Base.metadata.create_all(bind=engine)
+
+# Database Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# Include routers from image.py
+app.include_router(image.router)
 
 @app.get("/")
 async def read_root():
     return {"message": "Welcome to the Image Processing Microservice!"}
-
-if __name__ == "__main__":
-    import uvicorn
-
-    # Read environment variables for host and port
-    host = os.getenv("HOST", "0.0.0.0")
-    port = int(os.getenv("PORT", 8000))  # Convert port to integer
-
-    uvicorn.run(app, host=host, port=port)
