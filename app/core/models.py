@@ -1,13 +1,18 @@
 from sqlalchemy import Column, Integer, String, DateTime, func
-from sqlalchemy.ext.declarative import declarative_base
+from app.core.database import Base
 
-Base = declarative_base()
 
 class Image(Base):
     __tablename__ = "images"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    file_path = Column(String)
+    filename = Column(
+        String(50),
+        index=True,
+    )
+    status = Column(
+        String(20),
+        default="pending",
+    )
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
