@@ -1,9 +1,10 @@
 # app/api/endpoints/image.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from sqlalchemy.orm import Session
-
-from ...core import crud, schemas
-from ...dependencies import get_db
+from fastapi import FastAPI, File, UploadFile
+from pathlib import Path
+from app.core import crud, schemas
+from app.api.dependencies import get_db
 
 router = APIRouter()
 
@@ -13,9 +14,26 @@ async def read_root():
     return {"message": "Health-Check okay !!"}
 
 
-@router.post("/images/", response_model=schemas.Image)
-def create_image(image: schemas.ImageCreate, db: Session = Depends(get_db)):
-    return crud.create_image(db=db, image_data=image.dict())
+FILE_DIRECTORY = Path(__file__).parent / "app"
+
+print(f"FILE_DIRECTORY:{FILE_DIRECTORY}")
+
+FILE_DIRECTORY.mkdir(parents=True, exist_ok=True)  # Ensure directory exists
+
+@router.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
+    try:
+        file_location = FILE_DIRECTORY / file.filename
+        with open(file_location, "wb") as out_file:
+            content = await file.read() 
+            out_file.write(content)
+
+        return {"filename": file.filename, "location": str(file_location)}
+    except Exception as e:
+        # If something went wrong, return an error response
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    
 
 @router.get("/images/{image_id}", response_model=schemas.Image)
 def read_image(image_id: int, db: Session = Depends(get_db)):
