@@ -27,6 +27,8 @@ image_processing_microservice/
 │       ├── test_auth.py
 │       ├── test_image.py
 │       └── test_utils.py
+
+image folder 
 │
 ├── .env
 ├── Dockerfile
