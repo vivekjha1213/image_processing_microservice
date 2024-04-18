@@ -49,11 +49,10 @@ docker run -p 8000:8000 image_processing_microservice
 ## API Documentation
 Once the application is running, access the Swagger UI to interact with the API at: http://localhost:8000/docs
 
-## License
-Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
+
 
 ## Contact
-Your Name – [@YourTwitter](https://twitter.com/YourTwitter) - email@example.com
+vivek jha – [@vivekjha1213][(https://twitter.com/vivekjha1213))
 
 Project Link: [https://github.com/vivekjha1213/image_processing_microservice]
 ```
