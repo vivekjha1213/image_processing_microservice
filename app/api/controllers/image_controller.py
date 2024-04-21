@@ -4,7 +4,8 @@ from app.core.models import Image
 from pathlib import Path
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-
+from app.core.database import SessionLocal
+from datetime import datetime
 from app.core import crud
 
 
@@ -13,16 +14,29 @@ def read_root():
 
 
 def upload_image(file: UploadFile, upload_dir: Path):
-    file_location = upload_dir / file.filename  
+    file_location = upload_dir / file.filename
 
     try:
-        contents = file.file.read()
-        
+        # Save the file to the filesystem
         with open(file_location, 'wb') as f:
-            f.write(contents)
+            f.write(file.file.read())
+
+        # Save image details to the database
+        db = SessionLocal()
+        db_image = Image(
+            filename=file.filename,
+            status="pending",
+            created_at=datetime.now(),
+            updated_at=datetime.now()
+        )
+        db.add(db_image)
+        db.commit()
+        db.refresh(db_image)
+
     except Exception as e:
         print(f"Failed to write file due to {e}")
         return {"message": "There was an error uploading the file"}
+
     finally:
         # Close the file to free up system resources
         file.file.close()
