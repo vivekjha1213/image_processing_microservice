@@ -24,7 +24,7 @@ This project is an image processing microservice built with FastAPI. It allows u
 ### Setup
 Clone the repository:
 ```bash
-git clone https://github.com/yourgithubusername/image_processing_microservice.git](https://github.com/vivekjha1213/image_processing_microservice.git
+git clone https://github.com/vivekjha1213/image_processing_microservice.git](https://github.com/vivekjha1213/image_processing_microservice.git
 cd image_processing_microservice
 ```
 
